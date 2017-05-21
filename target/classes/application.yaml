@@ -1,0 +1,13 @@
+zuul:
+  routes:
+    adminui:
+      path: /ui/**
+      url: https://se.ifmo.ru/~s207602/dist/
+logging:
+  level:
+    org.springframework.web: 'debug'
+    org.springframework.hateoas: 'debug'
+spring:
+  jackson:
+    serialization:
+      indent_output: 'true'
