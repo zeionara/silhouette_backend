@@ -2,7 +2,7 @@ zuul:
   routes:
     adminui:
       path: /ui/**
-      url: https://se.ifmo.ru/~s207602/dist/
+      url: https://localhost:4200/ui/
 logging:
   level:
     org.springframework.web: 'debug'

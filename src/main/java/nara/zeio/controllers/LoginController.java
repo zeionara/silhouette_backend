@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,14 @@ import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 import nara.zeio.authorization.AuthorizationDetails;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/login")
 class LoginController{
 
@@ -27,7 +31,8 @@ class LoginController{
   JdbcTemplate jdbcTemplate;
 
   @RequestMapping(method = RequestMethod.POST)
-  AuthorizationResult isThereUser(@ModelAttribute Key key, HttpServletRequest request){
+  AuthorizationResult isThereUser(@ModelAttribute Key key, HttpServletRequest request, HttpServletResponse res){
+    res.addCookie(new Cookie("oop","argument"));
     PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
     System.out.println(request.getSession().getAttribute("authResult"));
     List<Key> keys = jdbcTemplate.query( "select login, password from users", new RowMapper<Key>() {
@@ -46,7 +51,10 @@ class LoginController{
       } else {
         ((AuthorizationResult)request.getSession().getAttribute("authResult")).setResult(true);
       }
-
+      System.out.println(((AuthorizationResult)request.getSession().getAttribute("authResult")).getResult());
+      System.out.println(request);
+      System.out.println(request.getSession());
+      System.out.println(request.getCookies());
       //List<String> strList =
       List<String> strLst = jdbcTemplate.query("select email from users where login='"+ikey.getLogin()+"';", new RowMapper() {
         public String mapRow(ResultSet rs, int rowNum) throws SQLException{
@@ -64,6 +72,13 @@ class LoginController{
 
   @RequestMapping(method = RequestMethod.GET)
   AuthorizationResult isThereUser(HttpServletRequest request){
+    System.out.println("ok-------------------------");
+    System.out.println(request);
+    System.out.println(request.getSession());
+    System.out.println(request.getSession().getAttribute("authResult"));
+    System.out.println(request.isRequestedSessionIdFromCookie());
+    System.out.println(request.getCookies());
+    System.out.println(((AuthorizationResult)request.getSession().getAttribute("authResult")).getResult());
     return (AuthorizationResult)request.getSession().getAttribute("authResult");
   }
 

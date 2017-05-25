@@ -15,8 +15,10 @@ import nara.zeio.storages.PontoRepository;
 import java.util.List;
 import nara.zeio.mail.Sender;
 import nara.zeio.authorization.AuthorizationDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RepositoryRestController
+@CrossOrigin
 @RequestMapping("/addponto")
 class PontoAddingController{
 
