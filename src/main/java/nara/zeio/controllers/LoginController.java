@@ -17,7 +17,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Cookie;
+import org.springframework.context.annotation.Scope;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
 import nara.zeio.authorization.AuthorizationDetails;
@@ -30,8 +32,19 @@ class LoginController{
   @Autowired
   JdbcTemplate jdbcTemplate;
 
+  private String attr;
+
   @RequestMapping(method = RequestMethod.POST)
-  AuthorizationResult isThereUser(@ModelAttribute Key key, HttpServletRequest request, HttpServletResponse res){
+  AuthorizationResult isThereUser(@ModelAttribute Key key, HttpServletRequest request, HttpServletResponse res, HttpSession httpSession){
+    System.out.println("Current session : ");
+    System.out.println(httpSession);
+    res.setHeader("Set-Cookie",res.getHeader("Set-Cookie")+";Domain=google.com");
+    System.out.println(res.getHeader("Set-Cookie"));
+    System.out.println(httpSession.getMaxInactiveInterval());
+    httpSession.setAttribute("attr","attr");
+    //attr = "attr";
+    //System.out.println(attr);
+    System.out.println(httpSession.getAttribute("attr"));
     res.addCookie(new Cookie("oop","argument"));
     PasswordAuthentication passwordAuthentication = new PasswordAuthentication();
     System.out.println(request.getSession().getAttribute("authResult"));
@@ -71,15 +84,26 @@ class LoginController{
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  AuthorizationResult isThereUser(HttpServletRequest request){
+  AuthorizationResult isThereUser(HttpServletRequest request, HttpServletResponse res, HttpSession httpSession){
+    System.out.println("Current session : ");
+    System.out.println(httpSession);
+    System.out.println(httpSession.getId());
+    System.out.println(httpSession.getMaxInactiveInterval());
+    //System.out.println(attr);
+    System.out.println(httpSession.getAttribute("attr"));
+    res.setHeader("Set-Cookie",res.getHeader("Set-Cookie")+";Domain=google.com");
+    res.setHeader("Set-Cookie",res.getHeader("Set-Cookie").replaceAll("HttpOnly;",""));
+    res.setHeader("Set-Cookie","my=value");
     System.out.println("ok-------------------------");
     System.out.println(request);
     System.out.println(request.getSession());
     System.out.println(request.getSession().getAttribute("authResult"));
     System.out.println(request.isRequestedSessionIdFromCookie());
     System.out.println(request.getCookies());
-    System.out.println(((AuthorizationResult)request.getSession().getAttribute("authResult")).getResult());
+    //System.out.println(((AuthorizationResult)request.getSession().getAttribute("authResult")).getResult());
+    if ((AuthorizationResult)request.getSession().getAttribute("authResult") != null)
     return (AuthorizationResult)request.getSession().getAttribute("authResult");
+    return new AuthorizationResult(true);
   }
 
   /*@RequestMapping(method = RequestMethod.POST)

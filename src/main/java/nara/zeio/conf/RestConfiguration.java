@@ -25,7 +25,8 @@ public class RestConfiguration {
         config.addAllowedMethod("POST");
         config.addAllowedMethod("DELETE");
         config.addAllowedMethod("PATCH");
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/pontos", config);
+        source.registerCorsConfiguration("/addponto", config);
         return new CorsFilter(source);
     }
 }
